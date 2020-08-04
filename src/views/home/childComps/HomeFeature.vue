@@ -1,7 +1,7 @@
 <template>
   <div class="feature">
     <a href="#">
-      <img src="~assets/img/home/.jpg" alt="">
+      <img src="#" alt="">
     </a>
   </div>
 </template>

@@ -1,6 +1,6 @@
 <template>
-  <div class="goods">
-    <img :src="goodsItem.show.img" alt="">
+  <div class="goods" @click="itemClick">
+    <img :src="goodsItem.show.img" alt="" @load="imageLoad">
     <div class="goods-info">
       <p>{{goodsItem.title}}</p>
       <span class="price">{{goodsItem.price}}</span>
@@ -18,6 +18,18 @@
         default() {
           return null
         }
+      }
+    },
+    methods: {
+      imageLoad() {
+        // 发射到事件总线上
+        this.$bus.$emit('itemImageLoad')
+      },
+      /**
+       * 跳转到详情页
+       */
+      itemClick() {
+        this.$router.push('/detail/'+this.goodsItem.iid)
       }
     } 
   }
@@ -68,6 +80,6 @@
     top: 0;
     width: 14px;
     height: 14px;
-    background: url("~assets/img/common/collect.svg") 0 0/14px 14px;
+    background: url(#) 0 0/14px 14px;
   }
 </style>
