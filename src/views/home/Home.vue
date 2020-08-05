@@ -39,6 +39,7 @@
 
   import {getHomeMultidata,getHomeGoods} from 'network/home'
   import {debounce} from 'common/utils'
+  import {itemListenerMixin} from 'common/mixin'
 
   export default {
     name: 'Home',
@@ -55,9 +56,11 @@
         isShowBackTop: false,
         tapOffsetTop: 0,
         isTabFixed: false,
-        saveY: 0
+        saveY: 0,
+        itemImgListener: null
       }
     },
+    mixins: [itemListenerMixin],
     components: {
       NavBar,
       Scroll,
@@ -81,13 +84,15 @@
       this.getHomeGoods('pop'),
       this.getHomeGoods('news'),
       this.getHomeGoods('sell')
+
+      //第一次点击
+      this.tabClick(0)
     },
     mounted() {
       //1.监听item中图片的加载
-      const refresh = debounce(this.$refs.scroll.refresh,200)
-      this.$bus.$on('itemImageLoad',() => {
-        refresh()
-      })
+      // const refresh = debounce(this.$refs.scroll.refresh,200)
+      // this.itemImgListener = ()=>{refresh()}
+      // this.$bus.$on('itemImageLoad',this.itemImgListener)
       //2.获取tabControl的offsetTop
       //所以的组件都有一个属性$el：用来获取组件中的元素
       //this.$refs.tabControl.$el.offsetTop
@@ -98,6 +103,8 @@
     },
     deactivated() {
       this.saveY = this.$refs.scroll.getScrollY()
+
+      this.$bus.$off('itemImageLoad',this.itemImgListener)
     },
     methods: {
       /**
@@ -115,8 +122,10 @@
             this.currentType = 'sell' 
             break
         }
-        this.$refs.TabControl1.currentIndex = index
-        this.$refs.tabControl2.currentIndex = index
+        if(currentIndex !== undefined){
+          this.$refs.TabControl1.currentIndex = index
+          this.$refs.tabControl2.currentIndex = index
+        }
       },
       /**
        * 网络请求相关的方法
